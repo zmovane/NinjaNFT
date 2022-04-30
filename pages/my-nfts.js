@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { marketplaceAddress } from "../config";
 
 import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { Wallpaper } from "./components/wallpaper";
 
 export default function MyAssets() {
   const [nfts, setNfts] = useState([]);
@@ -61,9 +62,12 @@ export default function MyAssets() {
       <div className="p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {nfts.map((nft, i) => (
-            <div key={i} className="border shadow rounded-xl overflow-hidden">
-              <img src={nft.image} className="rounded" />
-              <div className="p-4 bg-black">
+            <div
+              key={i}
+              className="flex items-center flex-col border shadow rounded-xl overflow-hidden"
+            >
+              <Wallpaper src={nft.image} />
+              <div className="p-4 bg-black w-full">
                 <p className="text-2xl font-bold text-white">
                   Price - {nft.price} Eth
                 </p>

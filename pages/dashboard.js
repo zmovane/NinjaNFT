@@ -7,6 +7,7 @@ import Web3Modal from "web3modal";
 import { marketplaceAddress } from "../config";
 
 import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { Wallpaper } from "./components/wallpaper";
 
 export default function CreatorDashboard() {
   const [nfts, setNfts] = useState([]);
@@ -57,9 +58,12 @@ export default function CreatorDashboard() {
         <h2 className="text-2xl py-2">Items Listed</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {nfts.map((nft, i) => (
-            <div key={i} className="border shadow rounded-xl overflow-hidden">
-              <img src={nft.image} className="rounded" />
-              <div className="p-4 bg-black">
+            <div
+              key={i}
+              className="flex items-center flex-col border shadow rounded-xl overflow-hidden"
+            >
+              <Wallpaper src={nft.image} />
+              <div className="p-4 bg-black w-full m-auto">
                 <p className="text-2xl font-bold text-white">
                   Price - {nft.price} Eth
                 </p>
