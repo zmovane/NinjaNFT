@@ -4,8 +4,8 @@ import { NavItem } from "./components/navitem";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div className="px-8 py-5">
-      <nav className="navbar bg-base-100">
+    <div className="px-8">
+      <nav className="navbar py-4 bg-base-100">
         <div className="flex-1">
           <a className="btn btn-ghost normal-case text-2xl font-bold">AmoNFT</a>
         </div>
@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }) {
           </ul>
         </div>
       </nav>
-      <Component {...pageProps} />
+      <Component {...pageProps} className="bg-base-300" />
     </div>
   );
 }
