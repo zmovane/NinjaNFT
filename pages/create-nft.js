@@ -79,21 +79,22 @@ export default function CreateItem() {
       <div className="w-1/2 flex flex-col pb-12">
         <input
           placeholder="Asset Name"
-          className="mt-8 border rounded p-4"
+          className="mt-8 p-4 input input-bordered input-primary w-full"
           onChange={(e) =>
             updateFormInput({ ...formInput, name: e.target.value })
           }
         />
         <textarea
           placeholder="Asset Description"
-          className="mt-2 border rounded p-4"
+          className="mt-2 p-4 textarea textarea-primary input-lg w-full"
           onChange={(e) =>
             updateFormInput({ ...formInput, description: e.target.value })
           }
         />
         <input
           placeholder="Asset Price in Eth"
-          className="mt-2 border rounded p-4"
+          type="number"
+          className="mt-2 p-4 input input-bordered input-primary w-full"
           onChange={(e) =>
             updateFormInput({ ...formInput, price: e.target.value })
           }
@@ -102,7 +103,7 @@ export default function CreateItem() {
         {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
         <button
           onClick={listNFTForSale}
-          className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
+          className="btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
         >
           Create NFT
         </button>
