@@ -7,7 +7,6 @@ import Web3Modal from "web3modal";
 import { marketplaceAddress } from "../config";
 
 import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import Image from "next/image";
 import { Wallpaper } from "./components/wallpaper";
 
 export default function Home() {

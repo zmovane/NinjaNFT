@@ -1,25 +1,21 @@
 /* pages/_app.js */
 import "../styles/globals.css";
-import Link from "next/link";
+import { NavItem } from "./components/navitem";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div>
-      <nav className="border-b p-6">
-        <p className="text-4xl font-bold">Metaverse Marketplace</p>
-        <div className="flex justify-center mt-4">
-          <Link href="/">
-            <a className="mr-4 text-pink-500">Home</a>
-          </Link>
-          <Link href="/create-nft">
-            <a className="mr-6 text-pink-500">Sell NFT</a>
-          </Link>
-          <Link href="/my-nfts">
-            <a className="mr-6 text-pink-500">My NFTs</a>
-          </Link>
-          <Link href="/dashboard">
-            <a className="mr-6 text-pink-500">Dashboard</a>
-          </Link>
+    <div className="px-8 py-5">
+      <nav className="navbar bg-base-100">
+        <div className="flex-1">
+          <a className="btn btn-ghost normal-case text-2xl font-bold">AmoNFT</a>
+        </div>
+        <div className="flex-none">
+          <ul className="menu menu-horizontal p-0">
+            <NavItem href="/" title="Home" />
+            <NavItem href="/create-nft" title="Sell NFT" />
+            <NavItem href="/my-nfts" title="My NFTs" />
+            <NavItem href="/dashboard" title="Dashboard" />
+          </ul>
         </div>
       </nav>
       <Component {...pageProps} />
