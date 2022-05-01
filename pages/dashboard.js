@@ -3,11 +3,9 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
-
 import { marketplaceAddress } from "../config";
-
 import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { Wallpaper } from "./components/wallpaper";
+import { Card } from "./components/card";
 
 export default function CreatorDashboard() {
   const [nfts, setNfts] = useState([]);
@@ -42,6 +40,8 @@ export default function CreatorDashboard() {
           seller: i.seller,
           owner: i.owner,
           image: meta.data.image,
+          name: meta.data.name,
+          description: meta.data.description,
         };
         return item;
       })
@@ -58,17 +58,7 @@ export default function CreatorDashboard() {
         <h2 className="text-2xl py-2">Items Listed</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {nfts.map((nft, i) => (
-            <div
-              key={i}
-              className="flex items-center flex-col border shadow rounded-xl overflow-hidden"
-            >
-              <Wallpaper src={nft.image} />
-              <div className="p-4 bg-black w-full m-auto">
-                <p className="text-2xl font-bold text-white">
-                  Price - {nft.price} Eth
-                </p>
-              </div>
-            </div>
+            <Card key={i} data={nft} />
           ))}
         </div>
       </div>

@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
 import { useRouter } from "next/router";
-
 import { marketplaceAddress } from "../config";
-
 import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { Wallpaper } from "./components/wallpaper";
+import { Card, CardType } from "./components/card";
 
 export default function MyAssets() {
   const [nfts, setNfts] = useState([]);
@@ -45,6 +43,8 @@ export default function MyAssets() {
           owner: i.owner,
           image: meta.data.image,
           tokenURI,
+          name: meta.data.name,
+          description: meta.data.description,
         };
         return item;
       })
@@ -62,23 +62,12 @@ export default function MyAssets() {
       <div className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {nfts.map((nft, i) => (
-            <div
+            <Card
               key={i}
-              className="flex items-center flex-col border shadow rounded-xl overflow-hidden"
-            >
-              <Wallpaper src={nft.image} />
-              <div className="p-4 bg-black w-full">
-                <p className="text-2xl font-bold text-white">
-                  Price - {nft.price} Eth
-                </p>
-                <button
-                  className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
-                  onClick={() => listNFT(nft)}
-                >
-                  List
-                </button>
-              </div>
-            </div>
+              data={nft}
+              type={CardType.MINE_NO_LISTED}
+              onClick={() => listNFT(nft)}
+            />
           ))}
         </div>
       </div>
