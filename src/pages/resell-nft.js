@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import axios from "axios";
-import Web3Modal from "web3modal";
 import { marketplaceAddress } from "../../config";
 import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { useContract } from "../hooks/useContract";
 
 export default function ResellNFT() {
+  const contract = useContract(marketplaceAddress, NFTMarketplace.abi);
   const [formInput, updateFormInput] = useState({ price: "", image: "" });
   const router = useRouter();
   const { id, tokenURI } = router.query;
@@ -25,17 +26,8 @@ export default function ResellNFT() {
 
   async function listNFTForSale() {
     if (!price) return;
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
 
     const priceFormatted = ethers.utils.parseUnits(formInput.price, "ether");
-    let contract = new ethers.Contract(
-      marketplaceAddress,
-      NFTMarketplace.abi,
-      signer
-    );
     let listingPrice = await contract.getListingPrice();
 
     listingPrice = listingPrice.toString();

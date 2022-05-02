@@ -2,33 +2,20 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Web3Modal from "web3modal";
 import { marketplaceAddress } from "../../config";
 import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
 import { Card } from "../components/card";
+import { useContract } from "../hooks/useContract";
 
 export default function CreatorDashboard() {
   const [nfts, setNfts] = useState([]);
+  const contract = useContract(marketplaceAddress, NFTMarketplace.abi, true);
   const [loadingState, setLoadingState] = useState("not-loaded");
   useEffect(() => {
     loadNFTs();
   }, []);
   async function loadNFTs() {
-    const web3Modal = new Web3Modal({
-      network: "mainnet",
-      cacheProvider: true,
-    });
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
-
-    const contract = new ethers.Contract(
-      marketplaceAddress,
-      NFTMarketplace.abi,
-      signer
-    );
     const data = await contract.fetchItemsListed();
-
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await contract.tokenURI(i.tokenId);
