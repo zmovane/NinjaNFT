@@ -2,7 +2,7 @@
 import "../styles/globals.css";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { Navbar } from "../components/navbar";
+import { NavBar } from "../components/navbar";
 
 function MyApp({ Component, pageProps }) {
   function getLibrary(provider) {
@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <div className="px-8">
       <Web3ReactProvider getLibrary={getLibrary}>
-        <Navbar />
+        <NavBar />
         <Component {...pageProps} className="bg-base-300" />
       </Web3ReactProvider>
     </div>

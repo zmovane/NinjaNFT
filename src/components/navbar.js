@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { injected } from "../components/wallet/connectors";
 import { NavItem } from "./navitem";
 
-export function Navbar() {
+export function NavBar() {
   const { active, account, activate, deactivate } = useWeb3React();
   async function connect() {
     try {
