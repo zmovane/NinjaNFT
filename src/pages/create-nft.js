@@ -5,8 +5,8 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";
 import Web3Modal from "web3modal";
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
-import { marketplaceAddress } from "../config";
-import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { marketplaceAddress } from "../../config";
+import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
 
 export default function CreateItem() {
   const [fileUrl, setFileUrl] = useState(null);

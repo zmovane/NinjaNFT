@@ -3,9 +3,9 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
-import { marketplaceAddress } from "../config";
-import NFTMarketplace from "../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { Card, CardType } from "./components/card";
+import { marketplaceAddress } from "../../config";
+import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { Card, CardType } from "../components/card";
 
 export default function Home() {
   const [nfts, setNfts] = useState([]);
