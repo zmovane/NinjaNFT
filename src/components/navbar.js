@@ -42,26 +42,26 @@ export function NavBar() {
       <div className="flex-1">
         <Image src="/logo.png" width={35} height={35} alt="logo" />
         <a className="btn btn-ghost normal-case text-2xl font-bold">NinjaNFT</a>
+        <ul className="menu menu-horizontal p-0 ml-10">
+          <NavItem href="/" title="Home" />
+          <NavItem href="/create-nft" title="Sell NFT" />
+          <NavItem href="/my-nfts" title="My NFTs" />
+          <NavItem href="/dashboard" title="Dashboard" />
+        </ul>
       </div>
-      <ul className="menu menu-horizontal p-0">
-        <NavItem href="/" title="Home" />
-        <NavItem href="/create-nft" title="Sell NFT" />
-        <NavItem href="/my-nfts" title="My NFTs" />
-        <NavItem href="/dashboard" title="Dashboard" />
-        <button
-          className="btn btn-primary w-28"
-          onClick={() => {
-            active ? disconnect() : connect();
-          }}
-          style={{
-            "text-overflow": "ellipsis",
-            overflow: "hidden",
-            display: "inline",
-          }}
-        >
-          {active ? account : "Connect"}
-        </button>
-      </ul>
+      <button
+        className="btn btn-primary w-28"
+        onClick={() => {
+          active ? disconnect() : connect();
+        }}
+        style={{
+          "text-overflow": "ellipsis",
+          overflow: "hidden",
+          display: "inline",
+        }}
+      >
+        {active ? account : "Connect"}
+      </button>
     </nav>
   );
 }
