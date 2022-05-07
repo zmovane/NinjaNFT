@@ -3,26 +3,11 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import { injected } from "../components/wallet/connectors";
 import { NavItem } from "./navitem";
+import { Web3Connect } from "./web3connect";
 
 export function NavBar() {
-  const { active, account, activate, deactivate } = useWeb3React();
-  async function connect() {
-    try {
-      await activate(injected);
-      localStorage.setItem("isWalletConnected", true);
-    } catch (ex) {
-      console.log(ex);
-    }
-  }
-
-  async function disconnect() {
-    try {
-      deactivate();
-      localStorage.setItem("isWalletConnected", false);
-    } catch (ex) {
-      console.log(ex);
-    }
-  }
+  const { activate } = useWeb3React();
+  
 
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
@@ -49,19 +34,7 @@ export function NavBar() {
           <NavItem href="/dashboard" title="Dashboard" />
         </ul>
       </div>
-      <button
-        className="btn btn-primary w-28"
-        onClick={() => {
-          active ? disconnect() : connect();
-        }}
-        style={{
-          "text-overflow": "ellipsis",
-          overflow: "hidden",
-          display: "inline",
-        }}
-      >
-        {active ? account : "Connect"}
-      </button>
+      <Web3Connect /> 
     </nav>
   );
 }
