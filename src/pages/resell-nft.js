@@ -6,6 +6,7 @@ import axios from "axios";
 import { marketplaceAddress } from "../../config";
 import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
 import { useContract } from "../hooks/useContract";
+import Image from "next/image";
 
 export default function ResellNFT() {
   const contract = useContract(marketplaceAddress, NFTMarketplace.abi);
@@ -43,8 +44,9 @@ export default function ResellNFT() {
     <div className="flex justify-center">
       <div className="w-1/2 flex flex-col pb-12">
         <input
+          type="number"
           placeholder="Asset Price in Eth"
-          className="mt-2 border rounded p-4"
+          className="mt-2 p-4 input input-bordered input-primary w-full"
           onChange={(e) =>
             updateFormInput({ ...formInput, price: e.target.value })
           }
@@ -52,7 +54,7 @@ export default function ResellNFT() {
         {image && <img className="rounded mt-4" width="350" src={image} />}
         <button
           onClick={listNFTForSale}
-          className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
+          className="btn btn-primary font-bold mt-4 text-white rounded p-4 shadow-lg"
         >
           List NFT
         </button>
