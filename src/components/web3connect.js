@@ -8,7 +8,7 @@ export function Web3Connect() {
     <button
       className="btn btn-primary w-48"
       style={{
-        "text-overflow": "ellipsis",
+        textOverflow: "ellipsis",
         overflow: "hidden",
         display: "inline",
       }}
@@ -20,7 +20,7 @@ export function Web3Connect() {
       <button
         className="btn btn-primary w-48"
         style={{
-          "text-overflow": "ellipsis",
+          textOverflow: "ellipsis",
           overflow: "hidden",
           display: "inline",
         }}
