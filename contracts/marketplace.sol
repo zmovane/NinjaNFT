@@ -3,9 +3,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "hardhat/console.sol";
 
-contract NFTMarketplace is ERC721URIStorage {
+contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
@@ -51,6 +52,7 @@ contract NFTMarketplace is ERC721URIStorage {
     function createToken(string memory tokenURI, uint256 price)
         public
         payable
+        nonReentrant
         returns (uint256)
     {
         _tokenIds.increment();
@@ -89,7 +91,7 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
     // allow someone to resell a token they have purchased
-    function resellToken(uint256 tokenId, uint256 price) public payable {
+    function resellToken(uint256 tokenId, uint256 price) public payable nonReentrant{
         require(
             msg.sender == idToMarketItem[tokenId].owner,
             "Only item owner can perform this operation"
@@ -110,7 +112,7 @@ contract NFTMarketplace is ERC721URIStorage {
 
     // Creates the sale of a marketplace item
     // Transfers ownership of the item, as well as funds between parties
-    function createMarketSale(uint256 tokenId) public payable {
+    function createMarketSale(uint256 tokenId) public payable nonReentrant{
         uint256 price = idToMarketItem[tokenId].price;
         address seller = idToMarketItem[tokenId].seller;
         require(
