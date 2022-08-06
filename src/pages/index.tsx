@@ -1,19 +1,19 @@
-/* pages/index.js */
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { marketplaceAddress } from "../../config";
-import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { Card, CardType } from "../components/card";
+import { abi } from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { Card } from "../components/card";
 import { useContract } from "../hooks/useContract";
+import { Address, CardType, NFTData } from "../interfaces";
+import { NFTMarketplace, NFTMarketplace__factory } from "../types";
 
 export default function Home() {
-  const [nfts, setNfts] = useState([]);
-  const contract = useContract(marketplaceAddress, NFTMarketplace.abi, true);
+  const [nfts, setNfts] = useState<NFTData[]>([]);
+  const contract: NFTMarketplace= NFTMarketplace__factory.connect(marketplaceAddress, new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'))
+  console.log("contract:", typeof contract)
   const [loadingState, setLoadingState] = useState("not-loaded");
-  useEffect(() => {
-    loadNFTs();
-  }, []);
+
   async function loadNFTs() {
     const data = await contract.fetchMarketItems();
 
@@ -22,18 +22,19 @@ export default function Home() {
      *  them as well as fetch their token metadata
      */
     const items = await Promise.all(
-      data.map(async (i) => {
+      data.map(async (i: NFTMarketplace.MarketItemStruct) => {
         const tokenUri = await contract.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
-        let item = {
+        let item: NFTData = {
           price,
-          tokenId: i.tokenId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
+          tokenId: i.tokenId.toString(),
+          seller: i.seller as Address,
+          owner: i.owner as Address,
           image: meta.data.image,
           name: meta.data.name,
           description: meta.data.description,
+          tokenURI: tokenUri
         };
         return item;
       })
@@ -41,15 +42,20 @@ export default function Home() {
     setNfts(items);
     setLoadingState("loaded");
   }
-  async function buyNft(nft) {
+  async function buyNft(nft: NFTData) {
     /* user will be prompted to pay the asking proces to complete the transaction */
     const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
-    const transaction = await contract.createMarketSale(nft.tokenId, {
+    const transaction = await contract!.createMarketSale(nft.tokenId, {
       value: price,
     });
     await transaction.wait();
     loadNFTs();
   }
+
+  useEffect(() => {
+    loadNFTs();
+  }, []);
+
   if (loadingState === "loaded" && !nfts.length)
     return <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>;
   return (
@@ -57,7 +63,7 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
         {nfts.map((nft, i) => (
           <Card
-            key={i}
+            key={i.toString()}
             data={nft}
             type={CardType.HOME_ON_SALE}
             onClick={() => buyNft(nft)}

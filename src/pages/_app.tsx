@@ -1,11 +1,10 @@
-/* pages/_app.js */
 import "../styles/globals.css";
 import { Web3ReactProvider } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider, ExternalProvider } from "@ethersproject/providers";
 import { NavBar } from "../components/navbar";
-
-function MyApp({ Component, pageProps }) {
-  function getLibrary(provider) {
+import type { AppProps } from "next/app";
+function MyApp({ Component, pageProps }: AppProps) {
+  function getLibrary(provider: ExternalProvider) {
     return new Web3Provider(provider);
   }
   return (

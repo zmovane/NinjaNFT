@@ -1,15 +1,13 @@
+import { CardType } from "../interfaces";
 import { Wallpaper } from "./wallpaper";
 
-export const CardType = {
-  HOME_ON_SALE: Symbol(),
-  MINE_LISTED: Symbol(),
-  MINE_NO_LISTED: Symbol(),
-};
-export function Card({ key, data, onClick, type }) {
+
+type CardProps = { key: string; data: any; onClick: any; type: CardType };
+export function Card({ key, data, onClick, type }: CardProps) {
   return (
     <div key={key} className="card card-compact bg-base-100 shadow-xl">
       <figure>
-        <Wallpaper src={data.image} />
+        <Wallpaper url={data.image} />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{data.name}</h2>

@@ -1,16 +1,15 @@
-/* pages/create-nft.js */
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ethers } from "ethers";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";
 import { useContract } from "../hooks/useContract";
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
+const client = ipfsHttpClient({ url: "https://ipfs.infura.io:5001/api/v0" });
 import { marketplaceAddress } from "../../config";
-import NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import * as NFTMarketplace from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
 
 export default function CreateItem() {
   const contract = useContract(marketplaceAddress, NFTMarketplace.abi, true);
-  const [fileUrl, setFileUrl] = useState(null);
+  const [fileUrl, setFileUrl] = useState("");
   const [formInput, updateFormInput] = useState({
     price: "",
     name: "",
@@ -18,9 +17,9 @@ export default function CreateItem() {
   });
   const router = useRouter();
 
-  async function onChange(e) {
+  async function onChange(e: ChangeEvent<HTMLInputElement>) {
     /* upload image to IPFS */
-    const file = e.target.files[0];
+    const file = e.target.files![0];
     try {
       const added = await client.add(file, {
         progress: (prog) => console.log(`received: ${prog}`),
@@ -55,9 +54,9 @@ export default function CreateItem() {
     const url = await uploadToIPFS();
     // /* create the NFT */
     const price = ethers.utils.parseUnits(formInput.price, "ether");
-    let listingPrice = await contract.getListingPrice();
+    let listingPrice = await contract!.getListingPrice();
     listingPrice = listingPrice.toString();
-    let transaction = await contract.createToken(url, price, {
+    let transaction = await contract!.createToken(url, price, {
       value: listingPrice,
     });
     await transaction.wait();

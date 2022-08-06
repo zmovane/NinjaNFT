@@ -1,20 +1,19 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
-import { injected } from "../components/wallet/connectors";
+import { injected } from "./wallet/connectors";
 import { NavItem } from "./navitem";
 import { Web3Connect } from "./web3connect";
 
 export function NavBar() {
   const { activate } = useWeb3React();
-  
 
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
       if (localStorage?.getItem("isWalletConnected") === "true") {
         try {
           await activate(injected);
-          localStorage.setItem("isWalletConnected", true);
+          localStorage.setItem("isWalletConnected", "true");
         } catch (ex) {
           console.log(ex);
         }
@@ -34,7 +33,7 @@ export function NavBar() {
           <NavItem href="/dashboard" title="Dashboard" />
         </ul>
       </div>
-      <Web3Connect /> 
+      <Web3Connect />
     </nav>
   );
 }

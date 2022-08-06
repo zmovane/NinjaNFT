@@ -1,6 +1,8 @@
 import Image from "next/image";
 
-export function Wallpaper({ src: url }) {
+
+type WallpaperProps = {url: string}
+export function Wallpaper({ url } : WallpaperProps) {
   return (
     <Image
       className="bg-neutral-200"
