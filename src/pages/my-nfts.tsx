@@ -8,7 +8,7 @@ import { marketplaceAddress } from "../../config";
 import { abi } from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
 import { Card } from "../components/card";
 import { Address, CardType, NFTData } from "../interfaces";
-import { NFTMarketplace } from "../types";
+import { NFTMarketplace } from "../typechain";
 
 export default function MyAssets() {
   const [nfts, setNfts] = useState<NFTData[]>([]);

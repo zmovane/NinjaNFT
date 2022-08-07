@@ -6,7 +6,7 @@ import { abi } from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.js
 import { Card } from "../components/card";
 import { useContract } from "../hooks/useContract";
 import { Address, CardType, NFTData } from "../interfaces";
-import { NFTMarketplace } from "../types/contracts/marketplace.sol";
+import { NFTMarketplace } from "../typechain/contracts/marketplace.sol";
 
 export default function CreatorDashboard() {
   const [nfts, setNfts] = useState<NFTData[]>([]);

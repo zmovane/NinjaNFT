@@ -7,7 +7,7 @@ import { marketplaceAddress } from "../../config";
 import { abi } from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
 import { useContract } from "../hooks/useContract";
 import Image from "next/image";
-import { NFTMarketplace } from "../types";
+import { NFTMarketplace } from "../typechain";
 
 export default function ResellNFT() {
   const contract = useContract(marketplaceAddress, abi);

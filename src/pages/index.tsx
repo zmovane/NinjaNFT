@@ -6,16 +6,16 @@ import { abi } from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.js
 import { Card } from "../components/card";
 import { useContract } from "../hooks/useContract";
 import { Address, CardType, NFTData } from "../interfaces";
-import { NFTMarketplace, NFTMarketplace__factory } from "../types";
+import { NFTMarketplace } from "../typechain";
 
 export default function Home() {
   const [nfts, setNfts] = useState<NFTData[]>([]);
-  const contract: NFTMarketplace= NFTMarketplace__factory.connect(marketplaceAddress, new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'))
-  console.log("contract:", typeof contract)
+  const contract = useContract(marketplaceAddress, abi, true);
+  console.log("contract:", typeof contract);
   const [loadingState, setLoadingState] = useState("not-loaded");
 
   async function loadNFTs() {
-    const data = await contract.fetchMarketItems();
+    const data = await contract!.fetchMarketItems();
 
     /*
      *  map over items returned from smart contract and format
@@ -23,7 +23,7 @@ export default function Home() {
      */
     const items = await Promise.all(
       data.map(async (i: NFTMarketplace.MarketItemStruct) => {
-        const tokenUri = await contract.tokenURI(i.tokenId);
+        const tokenUri = await contract!.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item: NFTData = {
@@ -34,7 +34,7 @@ export default function Home() {
           image: meta.data.image,
           name: meta.data.name,
           description: meta.data.description,
-          tokenURI: tokenUri
+          tokenURI: tokenUri,
         };
         return item;
       })
