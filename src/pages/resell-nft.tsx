@@ -1,16 +1,18 @@
-/* pages/resell-nft.js */
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { marketplaceAddress } from "../../config";
-import { abi } from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { useContract } from "../hooks/useContract";
+import * as NFTMarketplaceJSON from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { useNFTMarketplaceContract } from "../hooks/useContract";
 import Image from "next/image";
-import { NFTMarketplace } from "../typechain";
 
 export default function ResellNFT() {
-  const contract = useContract(marketplaceAddress, abi);
+  const contract = useNFTMarketplaceContract(
+    marketplaceAddress,
+    NFTMarketplaceJSON.abi,
+    true
+  );
   const [formInput, updateFormInput] = useState({ price: "", image: "" });
   const router = useRouter();
   const { id, tokenURI } = router.query;
@@ -30,12 +32,11 @@ export default function ResellNFT() {
     if (!price) return;
 
     const priceFormatted = ethers.utils.parseUnits(formInput.price, "ether");
-    let listingPrice = await contract!.getListingPrice();
-    let transaction = await contract!.resellToken(Number(id), priceFormatted, {
+    let listingPrice = await contract.getListingPrice();
+    let transaction = await contract.resellToken(Number(id), priceFormatted, {
       value: listingPrice,
     });
     await transaction.wait();
-
     router.push("/");
   }
 
