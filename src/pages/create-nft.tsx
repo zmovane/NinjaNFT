@@ -1,11 +1,10 @@
 import { ChangeEvent, useState } from "react";
 import { ethers } from "ethers";
-import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";
 import { useNFTMarketplaceContract } from "../hooks/useContract";
-const client = ipfsHttpClient({ url: "https://ipfs.infura.io:5001/api/v0" });
 import { marketplaceAddress } from "../../config";
 import * as NFTMarketplaceJSON from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { uploadNFT } from "../utils/nft";
 
 export default function CreateItem() {
   const contract = useNFTMarketplaceContract(
@@ -13,7 +12,8 @@ export default function CreateItem() {
     NFTMarketplaceJSON.abi,
     true
   );
-  const [fileUrl, setFileUrl] = useState("");
+  const [base64imgae, setBase64imgae] = useState("");
+  const [file, setFile] = useState<File>();
   const [formInput, updateFormInput] = useState({
     price: "",
     name: "",
@@ -24,31 +24,19 @@ export default function CreateItem() {
   async function onChange(e: ChangeEvent<HTMLInputElement>) {
     /* upload image to IPFS */
     const file = e.target.files![0];
-    try {
-      const added = await client.add(file, {
-        progress: (prog) => console.log(`received: ${prog}`),
-      });
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      setFileUrl(url);
-    } catch (error) {
-      console.log("Error uploading file: ", error);
-    }
+    setFile(file);
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      setBase64imgae(event.target!.result!.toString());
+    };
+    reader.readAsDataURL(file);
   }
   async function uploadToIPFS() {
     const { name, description, price } = formInput;
-    if (!name || !description || !price || !fileUrl) return;
-    /* first, upload metadata to IPFS */
-    const data = JSON.stringify({
-      name,
-      description,
-      image: fileUrl,
-    });
-
+    if (!name || !description || !price || !file) return;
     try {
-      const added = await client.add(data);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      /* after metadata is uploaded to IPFS, return the URL to use it in the transaction */
-      return url;
+      const token = await uploadNFT(file, name, description);
+      return token.url;
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
@@ -56,7 +44,6 @@ export default function CreateItem() {
 
   async function listNFTForSale() {
     const url = await uploadToIPFS();
-    // /* create the NFT */
     const price = ethers.utils.parseUnits(formInput.price, "ether");
     let listingPrice = await contract.getListingPrice();
     let transaction = await contract.createToken(url!, price, {
@@ -92,7 +79,9 @@ export default function CreateItem() {
           }
         />
         <input type="file" name="Asset" className="my-4" onChange={onChange} />
-        {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
+        {base64imgae && (
+          <img className="rounded mt-4" width="350" src={base64imgae} />
+        )}
         <button
           onClick={listNFTForSale}
           className="btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
