@@ -29,7 +29,6 @@ export function NavBar() {
         <ul className="menu menu-horizontal p-0 ml-10">
           <NavItem href="/" title="Home" />
           <NavItem href="/create-nft" title="Sell NFT" />
-          <NavItem href="/my-nfts" title="My NFTs" />
           <NavItem href="/dashboard" title="Dashboard" />
         </ul>
       </div>
