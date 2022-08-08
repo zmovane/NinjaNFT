@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useNFTMarketplaceContract } from "../hooks/useContract";
 import { marketplaceAddress } from "../../config";
 import * as NFTMarketplaceJSON from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { uploadNFT } from "../utils/nft";
+import { uploadNFT } from "../utils/nftstorage";
 
 export default function CreateItem() {
   const contract = useNFTMarketplaceContract(
