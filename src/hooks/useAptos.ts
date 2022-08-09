@@ -8,6 +8,15 @@ const walletClient = new WalletClient(
   process.env.APTOS_FAUCET_URL
 );
 
+export interface NFTData {
+  name: string;
+  collection: string;
+  description: string;
+  image: string;
+  uri: string;
+  creator: string;
+}
+
 export function useAptosWallet() {
   const [address, setAddress] = useState("");
 
@@ -23,30 +32,30 @@ export function useAptosWallet() {
   return address;
 }
 
-export interface NFTData {
-  name: string;
-  collection: string;
-  description: string;
-  image: string;
-  uri: string;
-}
-
 export function useAptosGetTokens(address: string) {
   const [NFTs, setNFTs] = useState<NFTData[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const getTokens = async () => {
-      const tokens = await walletClient.getTokens(address, 100, 0);
+      const tokenIds = await walletClient.getTokenIds(address, 100, 0);
+      const tokens = await Promise.all(
+        tokenIds.map(async (i) => {
+          const token = await walletClient.getToken(i.data);
+          token.creator = i.data.token_data_id.creator;
+          return token;
+        })
+      );
       const items = await Promise.all(
         tokens.map(async (i) => {
-          const meta = (await axios.get(setIPFSGateway(i.token.uri))).data;
+          const meta = (await axios.get(setIPFSGateway(i.uri))).data;
           const item: NFTData = {
-            name: i.token.name.toString(),
-            collection: i.token.collection.toString(),
+            name: i.name.toString(),
+            collection: i.collection.toString(),
             description: meta.description,
             image: setIPFSGateway(meta.image),
-            uri: i.token.uri,
+            uri: i.uri,
+            creator: i.creator,
           };
           return item;
         })
@@ -54,7 +63,9 @@ export function useAptosGetTokens(address: string) {
       setLoaded(true);
       setNFTs(items);
     };
-    getTokens();
+    if (address) {
+      getTokens();
+    }
   }, [address]);
   return { NFTs, loaded };
 }
