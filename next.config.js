@@ -12,6 +12,9 @@ const nextConfig = {
   env: {
     RPC_URL: process.env.RPC_URL,
     NFT_STORAGE_KEY: process.env.NFT_STORAGE_KEY,
+    APTOS_NFT_MARKET_ADDRESS: process.env.APTOS_NFT_MARKET_ADDRESS,
+    APTOS_NODE_URL: process.env.APTOS_NODE_URL,
+    APTOS_FAUCET_URL: process.env.APTOS_FAUCET_URL,
   },
 };
 

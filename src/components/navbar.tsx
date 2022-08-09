@@ -29,7 +29,8 @@ export function NavBar() {
         <ul className="menu menu-horizontal p-0 ml-10">
           <NavItem href="/" title="Home" />
           <NavItem href="/create-nft" title="Sell NFT" />
-          <NavItem href="/dashboard" title="Dashboard" />
+          <NavItem href="/aptos-mint" title="Mint" />
+          <NavItem href="/aptos-dashboard" title="Dashboard" />
         </ul>
       </div>
       <Web3Connect />

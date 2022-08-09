@@ -7,6 +7,15 @@ const nftStorageClient = new NFTStorage({
   token: process.env.NFT_STORAGE_KEY!,
 });
 
+export function setIPFSGateway(ipfsURl: string) {
+  if (ipfsURl.startsWith("ipfs:"))
+    return (
+      "https://nftstorage.link/ipfs/" +
+      new URL(ipfsURl).pathname.replace(/^\/\//, "")
+    );
+  return ipfsURl;
+}
+
 export async function uploadNFT(
   file: string | File,
   name: string,

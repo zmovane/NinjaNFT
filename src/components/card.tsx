@@ -1,7 +1,6 @@
 import { CardType } from "../interfaces";
 import { Wallpaper } from "./wallpaper";
 
-
 type CardProps = { key: string; data: any; onClick: any; type: CardType };
 export function Card({ key, data, onClick, type }: CardProps) {
   return (

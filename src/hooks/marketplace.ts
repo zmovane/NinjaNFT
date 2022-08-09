@@ -3,29 +3,21 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { Address, NFTData } from "../interfaces";
 import { NFTMarketplace } from "../typechain";
-
-function setGateway(ipfsURl: string) {
-  if (ipfsURl.startsWith("ipfs:"))
-    return (
-      "https://nftstorage.link/ipfs/" +
-      new URL(ipfsURl).pathname.replace(/^\/\//, "")
-    );
-  return ipfsURl;
-}
+import { setIPFSGateway } from "../utils/nftstorage";
 
 async function fillItem(
   contract: NFTMarketplace,
   i: NFTMarketplace.MarketItemStruct
 ) {
   const tokenUri = await contract.tokenURI(i.tokenId);
-  const meta = (await axios.get(setGateway(tokenUri))).data;
+  const meta = (await axios.get(setIPFSGateway(tokenUri))).data;
   const price = ethers.utils.formatUnits(i.price.toString(), "ether");
   const item: NFTData = {
     price,
     tokenId: i.tokenId.toString(),
     seller: i.seller as Address,
     owner: i.owner as Address,
-    image: setGateway(meta.image),
+    image: setIPFSGateway(meta.image),
     name: meta.name,
     description: meta.description,
     tokenURI: tokenUri,
