@@ -34,7 +34,7 @@ export default function Home() {
           <Card
             key={i.toString()}
             data={item}
-            type={CardType.HOME_ON_SALE}
+            type={CardType.WithBuyBtn}
             onClick={() => buyNft(item)}
           />
         ))}

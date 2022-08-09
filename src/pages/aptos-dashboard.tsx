@@ -1,10 +1,11 @@
 import { Card } from "../components/card";
 import { CardType } from "../interfaces";
 import { useAptosGetTokens, useAptosWallet } from "../hooks/useAptos";
-
+import { useRouter } from "next/router";
 export default function CreatorDashboard() {
   const address = useAptosWallet();
   const { NFTs, loaded } = useAptosGetTokens(address);
+  const router = useRouter();
   return loaded && !NFTs.length ? (
     <h2 className="text-2xl p-8">No NFTs owned</h2>
   ) : (
@@ -16,8 +17,12 @@ export default function CreatorDashboard() {
             <Card
               key={i.toString()}
               data={item}
-              onClick={undefined}
-              type={CardType.MINE_LISTED}
+              onClick={() =>
+                router.push(
+                  `/aptos-auction?creator=${item.creator}&name=${item.name}&collection=${item.collection}&uri=${item.uri}`
+                )
+              }
+              type={CardType.WithListBtn}
             />
           ))}
         </div>

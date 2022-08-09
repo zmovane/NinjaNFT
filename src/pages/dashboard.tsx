@@ -33,7 +33,7 @@ export default function CreatorDashboard() {
                 key={i.toString()}
                 data={item}
                 onClick={undefined}
-                type={CardType.MINE_LISTED}
+                type={CardType.Noraml}
               />
             ))}
           </div>
@@ -52,7 +52,7 @@ export default function CreatorDashboard() {
             <Card
               key={i.toString()}
               data={item}
-              type={CardType.MINE_NO_LISTED}
+              type={CardType.WithListBtn}
               onClick={() => listNFT(item)}
             />
           ))}

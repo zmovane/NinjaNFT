@@ -12,7 +12,7 @@ export interface NFTData {
 }
 
 export enum CardType {
-  HOME_ON_SALE,
-  MINE_LISTED,
-  MINE_NO_LISTED,
+  Noraml,
+  WithListBtn,
+  WithBuyBtn,
 }
