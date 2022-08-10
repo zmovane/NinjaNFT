@@ -1,4 +1,4 @@
-module NFTMarket::FixedPriceSale {
+module Dollars1200PerHour::FixedPriceAuction {
     use aptos_framework::coin;
     use aptos_framework::aptos_coin::AptosCoin;
     use aptos_std::table;
@@ -10,8 +10,9 @@ module NFTMarket::FixedPriceSale {
 
     const ERROR_INVALID_BUYER: u64 = 0;
 
-    struct ListedItem has store, drop {
+    struct ListedItem has store {
         price: u64,
+        locked_token: token::Token
     }
 
     struct ListEvent has drop, store {
@@ -25,7 +26,6 @@ module NFTMarket::FixedPriceSale {
 
     struct ListedItemsData has key {
         listed_items: table::Table<guid::ID, ListedItem>,
-        locked_tokens: table::Table<guid::ID, token::Token>,
         listing_events: event::EventHandle<ListEvent>,
         buying_events: event::EventHandle<BuyEvent>,
     }
@@ -37,7 +37,6 @@ module NFTMarket::FixedPriceSale {
         if (!exists<ListedItemsData>(sender_addr)) {
             move_to(sender, ListedItemsData {
                 listed_items: table::new<guid::ID, ListedItem>(),
-                locked_tokens: table::new<guid::ID, token::Token>(),
                 listing_events: event::new_event_handle<ListEvent>(sender),
                 buying_events: event::new_event_handle<BuyEvent>(sender),
             });
@@ -48,16 +47,14 @@ module NFTMarket::FixedPriceSale {
 
         let listed_items_data = borrow_global_mut<ListedItemsData>(sender_addr);
         let listed_items = &mut listed_items_data.listed_items;
-        let locked_tokens = &mut listed_items_data.locked_tokens;
 
         event::emit_event<ListEvent>(
             &mut listed_items_data.listing_events,
             ListEvent { id: listing_id, amount: price },
         );
 
-        table::add(listed_items, listing_id, ListedItem { price });
-        table::add(locked_tokens, listing_id, locked_token);
-    }
+        table::add(listed_items, listing_id, ListedItem { price, locked_token});
+     }
 
     public entry fun buy_token(sender: &signer, seller: address, guid_creation_num: u64) acquires ListedItemsData {
         let listing_id = guid::create_id(seller, guid_creation_num);
@@ -70,12 +67,8 @@ module NFTMarket::FixedPriceSale {
             BuyEvent { id: listing_id },
         );
 
-        // transfer coin: sender => seller
-        let listed_item = table::remove(&mut listedItemsData.listed_items, listing_id);
-        coin::transfer<AptosCoin>(sender, seller, listed_item.price);
-
-        // deposit token
-        let locked_token = table::remove(&mut listedItemsData.locked_tokens, listing_id);
+        let ListedItem { price, locked_token } = table::remove(&mut listedItemsData.listed_items, listing_id);
+        coin::transfer<AptosCoin>(sender, seller, price);
         token::deposit_token(sender, locked_token);
     }
 }
