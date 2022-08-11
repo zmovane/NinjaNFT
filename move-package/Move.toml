@@ -1,6 +1,6 @@
 [package]
 name = "Dollars1200PerHour"
-version = "0.0.1"
+version = "0.0.3"
 license = "MIT"
 
 [addresses]
