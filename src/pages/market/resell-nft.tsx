@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { marketplaceAddress } from "../../config";
-import * as NFTMarketplaceJSON from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { useNFTMarketplaceContract } from "../hooks/useContract";
+import { marketplaceAddress } from "../../../config";
+import * as NFTMarketplaceJSON from "../../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { useNFTMarketplaceContract } from "../../hooks/useContract";
 import Image from "next/image";
 
 export default function ResellNFT() {
@@ -37,7 +37,7 @@ export default function ResellNFT() {
       value: listingPrice,
     });
     await transaction.wait();
-    router.push("/");
+    router.push("/market");
   }
 
   return (

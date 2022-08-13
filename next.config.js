@@ -16,6 +16,15 @@ const nextConfig = {
     APTOS_NODE_URL: process.env.APTOS_NODE_URL,
     APTOS_FAUCET_URL: process.env.APTOS_FAUCET_URL,
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/aptos-market',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;

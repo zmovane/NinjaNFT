@@ -1,9 +1,9 @@
-import { marketplaceAddress } from "../../config";
-import * as NFTMarketplaceJSON from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { Card } from "../components/card";
-import { useNFTMarketplaceContract } from "../hooks/useContract";
-import { CardType, NFTData } from "../interfaces";
-import { useListedItems, useMyItems } from "../hooks/marketplace";
+import { marketplaceAddress } from "../../../config";
+import * as NFTMarketplaceJSON from "../../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { Card } from "../../components/card";
+import { useNFTMarketplaceContract } from "../../hooks/useContract";
+import { Item } from "../../interfaces";
+import { useListedItems, useMyItems } from "../../hooks/marketplace";
 import { useRouter } from "next/router";
 
 export default function CreatorDashboard() {
@@ -16,8 +16,8 @@ export default function CreatorDashboard() {
   const { myItems, loaded: myItemsLoaded } = useMyItems(contract);
   const router = useRouter();
 
-  function listNFT(nft: NFTData) {
-    router.push(`/resell-nft?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`);
+  function listNFT(nft: Item) {
+    router.push(`/market/resell-nft?id=${nft.id}&tokenURI=${nft.uri}`);
   }
 
   const listedSection =
@@ -33,7 +33,7 @@ export default function CreatorDashboard() {
                 key={i.toString()}
                 data={item}
                 onClick={undefined}
-                type={CardType.Noraml}
+                type={"noraml"}
               />
             ))}
           </div>
@@ -52,7 +52,7 @@ export default function CreatorDashboard() {
             <Card
               key={i.toString()}
               data={item}
-              type={CardType.WithListBtn}
+              type={"withListBtn"}
               onClick={() => listNFT(item)}
             />
           ))}

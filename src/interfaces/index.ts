@@ -1,18 +1,18 @@
-export type Address = `0x${string}`;
+export type Chain = "Aptos" | "Polygon";
+export type CardType = "noraml" | "withListBtn" | "withBuyBtn";
+export type AuctionType = "FixedPriceSale" | "EnglishAuction" | "DucthAuction";
 
-export interface NFTData {
-  price: string;
-  tokenId: string;
-  seller: Address;
-  owner: Address;
-  image: string;
-  name: string;
+export interface Item {
+  id?: string;
+  collection?: string;
+  owner?: string;
+  creator?: string;
   description: string;
-  tokenURI: string;
-}
-
-export enum CardType {
-  Noraml,
-  WithListBtn,
-  WithBuyBtn,
+  isListing: boolean;
+  name: string;
+  price?: string;
+  seller?: string;
+  type?: AuctionType;
+  image: string;
+  uri: string;
 }

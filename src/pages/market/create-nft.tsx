@@ -1,56 +1,56 @@
 import { ChangeEvent, useState } from "react";
+import { ethers } from "ethers";
 import { useRouter } from "next/router";
-import { uploadNFT } from "../utils/nftstorage";
-import { useAptosWallet } from "../hooks/useAptos";
+import { useNFTMarketplaceContract } from "../../hooks/useContract";
+import { marketplaceAddress } from "../../../config";
+import * as NFTMarketplaceJSON from "../../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { uploadNFT } from "../../utils/nftstorage";
 
-export default function Mint() {
-  const router = useRouter();
-  const address = useAptosWallet();
-  const [base64image, setBase64image] = useState("");
-  const [formInput, updateFormInput] = useState<{
-    price: string;
-    name: string;
-    description: string;
-    file: File | null;
-  }>({
+export default function CreateItem() {
+  const contract = useNFTMarketplaceContract(
+    marketplaceAddress,
+    NFTMarketplaceJSON.abi,
+    true
+  );
+  const [base64imgae, setBase64imgae] = useState("");
+  const [file, setFile] = useState<File>();
+  const [formInput, updateFormInput] = useState({
     price: "",
     name: "",
     description: "",
-    file: null,
   });
+  const router = useRouter();
 
   async function onChange(e: ChangeEvent<HTMLInputElement>) {
+    /* upload image to IPFS */
     const file = e.target.files![0];
-    updateFormInput({ ...formInput, file: file });
+    setFile(file);
     const reader = new FileReader();
     reader.onload = function (event) {
-      setBase64image(event.target!.result!.toString());
+      setBase64imgae(event.target!.result!.toString());
     };
     reader.readAsDataURL(file);
   }
-
-  async function mintNFT() {
-    const { name, description, price, file } = formInput;
-    if (!address || !name || !description || !price || !file) return;
+  async function uploadToIPFS() {
+    const { name, description, price } = formInput;
+    if (!name || !description || !price || !file) return;
     try {
       const token = await uploadNFT(file, name, description);
-      const collname = "collName" + new Date().getMilliseconds();
-      await (window as any).martian.createCollection(
-        collname,
-        "Demo NFT Collection",
-        "https://aptos.dev"
-      );
-      await (window as any).martian.createToken(
-        collname,
-        name,
-        description,
-        1,
-        token.url
-      );
-      router.push("/");
+      return token.url;
     } catch (error) {
-      console.log("Error create NFT: ", error);
+      console.log("Error uploading file: ", error);
     }
+  }
+
+  async function listNFTForSale() {
+    const url = await uploadToIPFS();
+    const price = ethers.utils.parseUnits(formInput.price, "ether");
+    let listingPrice = await contract.getListingPrice();
+    let transaction = await contract.createToken(url!, price, {
+      value: listingPrice,
+    });
+    await transaction.wait();
+    router.push("/market");
   }
 
   return (
@@ -79,14 +79,14 @@ export default function Mint() {
           }
         />
         <input type="file" name="Asset" className="my-4" onChange={onChange} />
-        {base64image && (
-          <img className="rounded mt-4" width="350" src={base64image} />
+        {base64imgae && (
+          <img className="rounded mt-4" width="350" src={base64imgae} />
         )}
         <button
-          onClick={mintNFT}
+          onClick={listNFTForSale}
           className="btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
         >
-          Mint NFT
+          Create NFT
         </button>
       </div>
     </div>

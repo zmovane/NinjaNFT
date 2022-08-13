@@ -1,9 +1,8 @@
-import { Card } from "../components/card";
-import { CardType } from "../interfaces";
-import { useAptosGetTokens, useAptosWallet } from "../hooks/useAptos";
+import { Card } from "../../components/card";
+import { useAptosGetTokens, useAptosWallet } from "../../hooks/useAptos";
 import { useRouter } from "next/router";
 export default function CreatorDashboard() {
-  const address = useAptosWallet();
+  const { address } = useAptosWallet();
   const { NFTs, loaded } = useAptosGetTokens(address);
   const router = useRouter();
   return loaded && !NFTs.length ? (
@@ -19,10 +18,10 @@ export default function CreatorDashboard() {
               data={item}
               onClick={() =>
                 router.push(
-                  `/aptos-auction?creator=${item.creator}&name=${item.name}&collection=${item.collection}&uri=${item.uri}`
+                  `/aptos-market/auction?creator=${item.creator}&name=${item.name}&collection=${item.collection}&description=${item.description}&uri=${item.uri}`
                 )
               }
-              type={CardType.WithListBtn}
+              type={"withListBtn"}
             />
           ))}
         </div>

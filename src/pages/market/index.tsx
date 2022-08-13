@@ -1,10 +1,10 @@
 import { ethers } from "ethers";
-import { marketplaceAddress } from "../../config";
-import * as NFTMarketplaceJSON from "../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
-import { Card } from "../components/card";
-import { useNFTMarketplaceContract } from "../hooks/useContract";
-import { CardType, NFTData } from "../interfaces";
-import { useMarketItems } from "../hooks/marketplace";
+import { marketplaceAddress } from "../../../config";
+import * as NFTMarketplaceJSON from "../../../artifacts/contracts/marketplace.sol/NFTMarketplace.json";
+import { Card } from "../../components/card";
+import { useNFTMarketplaceContract } from "../../hooks/useContract";
+import { Item } from "../../interfaces";
+import { useMarketItems } from "../../hooks/marketplace";
 
 export default function Home() {
   let loadAt: number = new Date().getTime();
@@ -15,10 +15,9 @@ export default function Home() {
   );
   const { marketItems, loaded } = useMarketItems(contract, loadAt);
 
-  async function buyNft(nft: NFTData) {
-    /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseEther(nft.price.toString());
-    const transaction = await contract.createMarketSale(nft.tokenId, {
+  async function buyNft(nft: Item) {
+    const price = ethers.utils.parseEther(nft.price!.toString());
+    const transaction = await contract.createMarketSale(nft.id!, {
       value: price,
     });
     await transaction.wait();
@@ -34,7 +33,7 @@ export default function Home() {
           <Card
             key={i.toString()}
             data={item}
-            type={CardType.WithBuyBtn}
+            type={"withBuyBtn"}
             onClick={() => buyNft(item)}
           />
         ))}

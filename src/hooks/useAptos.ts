@@ -1,6 +1,7 @@
 import { WalletClient } from "@martiandao/aptos-web3-bip44.js";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Item } from "../interfaces";
 import { setIPFSGateway } from "../utils/nftstorage";
 
 const walletClient = new WalletClient(
@@ -8,18 +9,26 @@ const walletClient = new WalletClient(
   process.env.APTOS_FAUCET_URL
 );
 
-export interface NFTData {
-  name: string;
-  collection: string;
-  description: string;
-  image: string;
-  uri: string;
-  creator: string;
+async function fillAuctionItem(data: any): Promise<Item> {
+  const meta = (await axios.get(setIPFSGateway(data.uri))).data;
+  const item: Item = {
+    id: data._id,
+    collection: data.collection,
+    creator: data.creator,
+    description: data.description,
+    isListing: data.isListing,
+    name: data.name,
+    price: data.price,
+    seller: data.seller,
+    type: "FixedPriceSale",
+    image: setIPFSGateway(meta.image),
+    uri: setIPFSGateway(data.uri),
+  };
+  return item;
 }
 
 export function useAptosWallet() {
   const [address, setAddress] = useState("");
-
   useEffect(() => {
     const connectAptosWallet = async () => {
       const { address } = await (window as any).martian.connect();
@@ -29,11 +38,30 @@ export function useAptosWallet() {
     };
     connectAptosWallet();
   }, []);
-  return address;
+  return { address };
+}
+
+export function useAptosGetListedTokens() {
+  const [listedTokens, updateListedTokens] = useState<Item[]>([]);
+  const [loaded, updateLoaded] = useState(false);
+  useEffect(() => {
+    const req = async () => {
+      const response = await fetch("/api/aptos", {
+        method: "GET",
+      });
+      const items = await Promise.all(
+        (await response.json()).map(async (i: any) => await fillAuctionItem(i))
+      );
+      updateListedTokens(items);
+      updateLoaded(true);
+    };
+    req();
+  }, []);
+  return { listedTokens, loaded };
 }
 
 export function useAptosGetTokens(address: string) {
-  const [NFTs, setNFTs] = useState<NFTData[]>([]);
+  const [NFTs, setNFTs] = useState<Item[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -49,7 +77,8 @@ export function useAptosGetTokens(address: string) {
       const items = await Promise.all(
         tokens.map(async (i) => {
           const meta = (await axios.get(setIPFSGateway(i.uri))).data;
-          const item: NFTData = {
+          const item: Item = {
+            isListing: false,
             name: i.name.toString(),
             collection: i.collection.toString(),
             description: meta.description,

@@ -17,22 +17,22 @@ export function Card({ key, data, onClick, type }: CardProps) {
       <div className="card-body">
         <h2 className="card-title">{data.name}</h2>
         <p>{data.description}</p>
-        {type != CardType.Noraml || (
+        {type != "noraml" || (
           <div className="justify-start text-pink-400 font-bold">
             {data.price} ETH
           </div>
         )}
-        {type != CardType.Noraml && (
+        {type != "noraml" && (
           <div className="card-actions justify-end">
             <button
               className="btn btn-primary"
               onClick={onClick}
               style={{ minWidth: "6rem" }}
             >
-              {type == CardType.WithBuyBtn ? "Buy Now" : "List"}
+              {type == "withBuyBtn" ? "Buy Now" : "List"}
             </button>
           </div>
-        ) }
+        )}
       </div>
     </div>
   );
